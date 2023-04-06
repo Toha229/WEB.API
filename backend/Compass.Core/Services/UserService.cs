@@ -159,7 +159,8 @@ namespace Compass.Core.Services
 				};
 			}
 
-            var mapped = _mapper.Map<AppUser, GetUsersDto>(user);
+            List<GetUsersDto> mapped = new List<GetUsersDto>() { _mapper.Map<AppUser, GetUsersDto>(user) };
+            mapped[0].Role = (await _userManager.GetRolesAsync(user)).First();
 
             return new ServiceResponse
             {
