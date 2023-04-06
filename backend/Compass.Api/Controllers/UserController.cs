@@ -1,5 +1,6 @@
 ﻿using Compass.Core.DTO_s;
 using Compass.Core.Services;
+using Compass.Core.Validation.Token;
 using Compass.Core.Validation.User;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -24,7 +25,7 @@ namespace Compass.Api.Controllers
         {
             var validator = new RegisterUserValidation();
             var validatinResult = await validator.ValidateAsync(model);
-            if(validatinResult.IsValid)
+            if (validatinResult.IsValid)
             {
                 var result = await _userService.IncertAsync(model);
                 return Ok(result);
@@ -46,16 +47,60 @@ namespace Compass.Api.Controllers
             return BadRequest(validatinResult.Errors);
         }
 
-        [HttpPost("users")]
-        public async Task<IActionResult> GetUsersAsync()
+        [HttpGet("logout")]
+        public async Task<IActionResult> LogoutAsync(string userId)
         {
-            var result = await _userService.GetAllUsersAsync();
-
+            var result = await _userService.LogoutAsync(userId);
             if (result.Success)
             {
                 return Ok(result);
             }
             return BadRequest(result);
         }
-    }
+
+        [AllowAnonymous]
+        [HttpPost("RefreshToken")]
+        public async Task<IActionResult> RefreshToken([FromBody] TokenRequestDto model)
+        {
+            var validator = new TokenRequestValidation();
+            var validatinResult = await validator.ValidateAsync(model);
+            if (validatinResult.IsValid)
+            {
+                var result = await _userService.RefreshTokenAsync(model);
+                if (result.Success)
+                {
+                    return Ok(result);
+                }
+                return BadRequest(result);
+            }
+            else
+            {
+                return BadRequest(validatinResult.Errors);
+            }
+		}
+
+		[HttpPost("users")]
+		public async Task<IActionResult> GetUsersAsync()
+		{
+			var result = await _userService.GetAllUsersAsync();
+
+			if (result.Success)
+			{
+				return Ok(result);
+			}
+			return BadRequest(result);
+		}
+
+		[HttpGet("profile")]
+		public async Task<IActionResult> GetProfileAsync(string userId)
+		{
+			var result = await _userService.GetUserProfileAsync(userId);
+
+			if (result.Success)
+			{
+				return Ok(result);
+			}
+			return BadRequest(result);
+		}
+	}
 }

@@ -101,17 +101,72 @@ namespace Compass.Core.Services
                 };
             }
         }
-        public async Task<ServiceResponse> GetAllUsersAsync()
+
+        public async Task<ServiceResponse> LogoutAsync(string userId)
         {
-            List<AppUser> users = await _userManager.Users.ToListAsync();
-            List<GetUsersDto> mappedUsers = users.Select(u => _mapper.Map<AppUser, GetUsersDto>(u)).ToList();
+            var user = await _userManager.FindByIdAsync(userId);
+            if(user == null)
+            {
+                return new ServiceResponse
+                {
+                    Success = false,
+                    Message = "User not found."
+                };
+            }
+            IEnumerable<RefreshToken> tokens = await _jwtService.GetAll();
+            foreach (RefreshToken token in tokens)
+            {
+                await _jwtService.Delete(token);
+            }
 
             return new ServiceResponse
             {
                 Success = true,
-                Message = "All users loaded.",
-                Payload = mappedUsers
+                Message = "User successfully logged out."
             };
         }
-    }
+
+        public async Task<ServiceResponse> RefreshTokenAsync(TokenRequestDto model)
+        {
+            return await _jwtService.VerifyTokenAsync(model);
+		}
+		public async Task<ServiceResponse> GetAllUsersAsync()
+		{
+			List<AppUser> users = await _userManager.Users.ToListAsync();
+			List<GetUsersDto> mappedUsers = users.Select(u => _mapper.Map<AppUser, GetUsersDto>(u)).ToList();
+			for (int i = 0; i < users.Count; i++)
+			{
+				mappedUsers[i].Role = (await _userManager.GetRolesAsync(users[i])).First();
+			}
+
+			return new ServiceResponse
+			{
+				Success = true,
+				Message = "All users loaded.",
+				Payload = mappedUsers
+			};
+		}
+
+		public async Task<ServiceResponse> GetUserProfileAsync(string id)
+		{
+            var user = await _userManager.FindByIdAsync(id);
+			if (user == null)
+			{
+				return new ServiceResponse
+				{
+					Success = false,
+					Message = "User not found."
+				};
+			}
+
+            var mapped = _mapper.Map<AppUser, GetUsersDto>(user);
+
+            return new ServiceResponse
+            {
+                Success = true,
+                Message = "Profile successfully loaded.",
+                Payload = mapped
+			};
+		}
+	}
 }
