@@ -70,26 +70,35 @@ const Profile: React.FC = () => {
                 {/* {errors.firstName && touched.firstName ? (
                 <div style={{ color: "red" }}>{errors.firstName}</div>
               ) : null} */}
+                {errors.firstName && touched.firstName ? (
+                  <div style={{ color: "red" }}>
+                    {errors.firstName as string}
+                  </div>
+                ) : null}
                 <Field
                   as={TextField}
                   fullWidth
                   label="First Name"
                   margin="normal"
                   name="firstName"
+                  type="firstName"
                   variant="outlined"
                 />
-                {/* {errors.lastName && touched.lastName ? (
-                <div style={{ color: "red" }}>{errors.lastName}</div>
-              ) : null} */}
+                {errors.lastName && touched.lastName ? (
+                  <div style={{ color: "red" }}>
+                    {errors.lastName as string}
+                  </div>
+                ) : null}
                 <Field
                   as={TextField}
                   fullWidth
                   label="Last Name"
                   margin="normal"
                   name="lastName"
+                  type="lastName"
                   variant="outlined"
                 />
-                {errors.email && touched.lastName ? (
+                {errors.email && touched.email ? (
                   <div style={{ color: "red" }}>{errors.email as string}</div>
                 ) : null}
                 <Field
@@ -101,6 +110,9 @@ const Profile: React.FC = () => {
                   type="email"
                   variant="outlined"
                 />
+                {errors.phone && touched.phone ? (
+                  <div style={{ color: "red" }}>{errors.phone as string}</div>
+                ) : null}
                 <Field
                   as={TextField}
                   fullWidth
@@ -110,6 +122,9 @@ const Profile: React.FC = () => {
                   type="phone"
                   variant="outlined"
                 />
+                {errors.password && touched.password ? (
+                  <div style={{ color: "red" }}>{errors.password}</div>
+                ) : null}
                 <Field
                   as={TextField}
                   fullWidth
@@ -119,9 +134,6 @@ const Profile: React.FC = () => {
                   type="password"
                   variant="outlined"
                 />
-                {errors.password && touched.password ? (
-                  <div style={{ color: "red" }}>{errors.password}</div>
-                ) : null}
                 <Box
                   sx={{
                     alignItems: "center",

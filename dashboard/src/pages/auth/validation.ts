@@ -67,8 +67,8 @@ export const ChangeProfileSchema = Yup.object().shape({
     .email("Invalid email address")
     .required("Required")
     .label("Email address"),
-  name: Yup.string().required("Name is required").label("Name"),
-  surname: Yup.string().required("Surname is required").label("Surname"),
+  firstName: Yup.string().required("Name is required").label("Name"),
+  lastName: Yup.string().required("Surname is required").label("Surname"),
   phone: Yup.string().required("Phone is required").label("Phone"),
   password: Yup.string()
   .min(6, "Password must be at least 6 characters")
