@@ -70,4 +70,9 @@ export const ChangeProfileSchema = Yup.object().shape({
   name: Yup.string().required("Name is required").label("Name"),
   surname: Yup.string().required("Surname is required").label("Surname"),
   phone: Yup.string().required("Phone is required").label("Phone"),
+  password: Yup.string()
+  .min(6, "Password must be at least 6 characters")
+  .required("Required")
+  .matches(passwordRegExp, "Password must contains A-Z, a-z, 0-9")
+  .label("Password"),
 });

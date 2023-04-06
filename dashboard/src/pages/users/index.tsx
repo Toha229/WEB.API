@@ -1,6 +1,5 @@
-import { useTypedSelector } from "../../hooks/useTypedSelector";
 import { alpha } from "@mui/material/styles";
-import React from "react";
+import React, { useEffect } from "react";
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -21,18 +20,34 @@ import Switch from "@mui/material/Switch";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
+import { useActions } from "../../hooks/useActions";
+import { useTypedSelector } from "../../hooks/useTypedSelector";
+import Button from "@mui/material/Button";
 
 interface Data {
   id: number;
   name: string;
   surname: string;
+  email: string;
+  phoneNumber: string;
+  role: string;
 }
 
-function createData(id: number, name: string, surname: string): Data {
+function createData(
+  id: number,
+  name: string,
+  surname: string,
+  email: string,
+  phoneNumber: string,
+  role: string
+): Data {
   return {
     id,
     name,
     surname,
+    email,
+    phoneNumber,
+    role,
   };
 }
 
@@ -84,12 +99,6 @@ interface HeadCell {
 
 const headCells: readonly HeadCell[] = [
   {
-    id: "id",
-    numeric: false,
-    disablePadding: true,
-    label: "Id",
-  },
-  {
     id: "name",
     numeric: true,
     disablePadding: false,
@@ -100,6 +109,24 @@ const headCells: readonly HeadCell[] = [
     numeric: true,
     disablePadding: false,
     label: "Surname",
+  },
+  {
+    id: "email",
+    numeric: true,
+    disablePadding: false,
+    label: "Email",
+  },
+  {
+    id: "phoneNumber",
+    numeric: true,
+    disablePadding: false,
+    label: "Phone Number",
+  },
+  {
+    id: "role",
+    numeric: true,
+    disablePadding: false,
+    label: "Role",
   },
 ];
 
@@ -128,7 +155,6 @@ function EnhancedTableHead(props: EnhancedTableProps) {
     (property: keyof Data) => (event: React.MouseEvent<unknown>) => {
       onRequestSort(event, property);
     };
-
   return (
     <TableHead>
       <TableRow>
@@ -164,6 +190,9 @@ function EnhancedTableHead(props: EnhancedTableProps) {
             </TableSortLabel>
           </TableCell>
         ))}
+        <TableCell align="right">
+          <Box>Edit</Box>
+        </TableCell>
       </TableRow>
     </TableHead>
   );
@@ -175,7 +204,6 @@ interface EnhancedTableToolbarProps {
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
   const { numSelected } = props;
-
   return (
     <Toolbar
       sx={{
@@ -234,8 +262,13 @@ const Users: React.FC = () => {
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
+  const { GetAllUsers } = useActions();
   const { allUsers } = useTypedSelector((store) => store.UserReducer);
+  useEffect(() => {
+    GetAllUsers();
+  }, []);
 
+  console.log(allUsers);
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
     property: keyof Data
@@ -339,16 +372,14 @@ const Users: React.FC = () => {
                           }}
                         />
                       </TableCell>
-                      <TableCell
-                        component="th"
-                        id={labelId}
-                        scope="row"
-                        padding="none"
-                      >
-                        {row.id}
-                      </TableCell>
                       <TableCell align="right">{row.name}</TableCell>
                       <TableCell align="right">{row.surname}</TableCell>
+                      <TableCell align="right">{row.email}</TableCell>
+                      <TableCell align="right">{row.phoneNumber}</TableCell>
+                      <TableCell align="right">{row.role}</TableCell>
+                      <TableCell align="right">
+                        <Button variant="outlined">Edit</Button>
+                      </TableCell>
                     </TableRow>
                   );
                 })}

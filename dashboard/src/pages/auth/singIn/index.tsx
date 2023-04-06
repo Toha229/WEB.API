@@ -41,11 +41,15 @@ const initialValues = { email: "", password: "" };
 const theme = createTheme();
 
 export default function SignIn() {
-  const { message } = useTypedSelector((store) => store.UserReducer);
+  const { message, isAuth } = useTypedSelector((store) => store.UserReducer);
   const { LoginUser } = useActions();
 
   if (message === "User logged in successfully.") {
     return <Navigate to="/dashboard" />;
+  }
+
+  if (isAuth) {
+    return <Navigate to={"/dashboard"} />;
   }
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
