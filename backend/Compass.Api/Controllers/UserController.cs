@@ -2,6 +2,7 @@
 using Compass.Core.Services;
 using Compass.Core.Validation.Token;
 using Compass.Core.Validation.User;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -56,9 +57,27 @@ namespace Compass.Api.Controllers
                 return Ok(result);
             }
             return BadRequest(result);
-        }
+		}
 
-        [AllowAnonymous]
+		[HttpPost("Update")]
+		public async Task<IActionResult> UpdateUserAsync([FromBody] UpdateUserDto model)
+		{
+			var validator = new UpdateUserValidation();
+			var validatinResult = await validator.ValidateAsync(model);
+            if (validatinResult.IsValid)
+            {
+                var result = await _userService.UpdateUserAsync(model);
+
+                if (result.Success)
+                {
+                    return Ok(result);
+                }
+                return BadRequest(result);
+            }
+            return BadRequest(validatinResult.Errors);
+		}
+
+		[AllowAnonymous]
         [HttpPost("RefreshToken")]
         public async Task<IActionResult> RefreshToken([FromBody] TokenRequestDto model)
         {

@@ -6,6 +6,7 @@ import {
   Incert,
   Login,
   Logout,
+  Update,
   removeTokens,
   setAccessToken,
   setRefreshToken,
@@ -71,6 +72,26 @@ export const LogOut = (id: string) => {
         dispatch({
           type: UserActionType.LOGOUT_USER,
         });
+      } else {
+        toast.error(response.message);
+      }
+      dispatch({
+        type: UserActionType.FINISH_REQUEST,
+        payload: response.message,
+      });
+    } catch {}
+  };
+};
+
+export const UpdateUser = (user: any) => {
+  return async (dispatch: Dispatch<UserActions>) => {
+    try {
+      dispatch({ type: UserActionType.START_REQUEST });
+      const data = await Update(user);
+      const { response } = data;
+
+      if (response.success) {
+        toast.success(response.message);
       } else {
         toast.error(response.message);
       }

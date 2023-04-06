@@ -14,28 +14,38 @@ import {
   Typography,
 } from "@mui/material";
 import { ChangeProfileSchema } from "../auth/validation";
-
-const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-  event.preventDefault();
-
-  const data = new FormData(event.currentTarget);
-
-  const newUser = {
-    Name: data.get("firstName"),
-    Surname: data.get("lastName"),
-    Email: data.get("email"),
-    Password: data.get("password"),
-    confirmPassword: data.get("confirmPassword"),
-  };
-};
+import { Navigate } from "react-router-dom";
 
 const Profile: React.FC = () => {
   const { profile } = useTypedSelector((store) => store.UserReducer);
   const { user } = useTypedSelector((store) => store.UserReducer);
+  const { message } = useTypedSelector((store) => store.UserReducer);
   const { GetUserProfile } = useActions();
+
+  const { UpdateUser } = useActions();
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const data = new FormData(event.currentTarget);
+
+    const newUser = {
+      Id: user.Id,
+      Name: data.get("firstName"),
+      Surname: data.get("lastName"),
+      Email: data.get("email"),
+      PhoneNumber: data.get("phone"),
+      Password: data.get("password"),
+    };
+
+    UpdateUser(newUser);
+  };
+
   useEffect(() => {
     GetUserProfile(user.Id);
   }, []);
+  if (message === "Profile updated!") {
+    return <Navigate to="/dashboard/" />;
+  }
 
   const initialValues = {
     email: profile.email,
@@ -150,7 +160,7 @@ const Profile: React.FC = () => {
                     type="submit"
                     variant="contained"
                   >
-                    {isSubmitting ? "Loading" : "Sign Up Now"}
+                    {isSubmitting ? "Loading" : "Update"}
                   </Button>
                 </Box>
               </Box>

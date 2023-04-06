@@ -11,124 +11,124 @@ using System.Threading.Tasks;
 
 namespace Compass.Core.Services
 {
-    public class UserService
-    {
-        private readonly UserManager<AppUser> _userManager;
-        private readonly JwtService _jwtService;
-        private readonly SignInManager<AppUser> _signInManager;
-        private readonly IMapper _mapper;
+	public class UserService
+	{
+		private readonly UserManager<AppUser> _userManager;
+		private readonly JwtService _jwtService;
+		private readonly SignInManager<AppUser> _signInManager;
+		private readonly IMapper _mapper;
 
-        public UserService(JwtService jwtService, UserManager<AppUser> userManager, IMapper mapper, SignInManager<AppUser> signInManager)
-        {
-            _userManager = userManager;
-            _mapper = mapper;
-            _signInManager = signInManager;
-            _jwtService = jwtService;
-        }
-        public async Task<ServiceResponse> IncertAsync(ResiterUserDto model)
-        {
-            var mappedUser = _mapper.Map<AppUser>(model);
-            var result = await _userManager.CreateAsync(mappedUser, model.Password);
-            if(result.Succeeded)
-            {
-                await _userManager.AddToRoleAsync(mappedUser, model.Role);
+		public UserService(JwtService jwtService, UserManager<AppUser> userManager, IMapper mapper, SignInManager<AppUser> signInManager)
+		{
+			_userManager = userManager;
+			_mapper = mapper;
+			_signInManager = signInManager;
+			_jwtService = jwtService;
+		}
+		public async Task<ServiceResponse> IncertAsync(ResiterUserDto model)
+		{
+			var mappedUser = _mapper.Map<AppUser>(model);
+			var result = await _userManager.CreateAsync(mappedUser, model.Password);
+			if (result.Succeeded)
+			{
+				await _userManager.AddToRoleAsync(mappedUser, model.Role);
 
-                return new ServiceResponse
-                {
-                    Success = true,
-                    Message = "User successfully created."
-                };
-            }
-            else
-            {
+				return new ServiceResponse
+				{
+					Success = true,
+					Message = "User successfully created."
+				};
+			}
+			else
+			{
 
-                return new ServiceResponse
-                {
-                    Success = false,
-                    Message = result.Errors.Select(e => e.Description).FirstOrDefault()
-                };
-            }
-        }
+				return new ServiceResponse
+				{
+					Success = false,
+					Message = result.Errors.Select(e => e.Description).FirstOrDefault()
+				};
+			}
+		}
 
-        public async Task<ServiceResponse> LoginAsync(LoginUserDto model)
-        {
-            var user = await _userManager.FindByEmailAsync(model.Email);
-            if(user == null)
-            {
-                return new ServiceResponse
-                {
-                    Success = false,
-                    Message = "Login or password incorrect."
-                };
-            }
+		public async Task<ServiceResponse> LoginAsync(LoginUserDto model)
+		{
+			var user = await _userManager.FindByEmailAsync(model.Email);
+			if (user == null)
+			{
+				return new ServiceResponse
+				{
+					Success = false,
+					Message = "Login or password incorrect."
+				};
+			}
 
-            var signInResult = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, lockoutOnFailure: true);
-            if(signInResult.Succeeded)
-            {
+			var signInResult = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, lockoutOnFailure: true);
+			if (signInResult.Succeeded)
+			{
 
-                var tokens = await _jwtService.GenerateJwtTokenAsync(user);
+				var tokens = await _jwtService.GenerateJwtTokenAsync(user);
 
-                return new ServiceResponse
-                {
-                    AccessToken = tokens.token,
-                    RefreshToken = tokens.refreshToken.Token,
-                    Success = true,
-                    Message = "User logged in successfully."
-                };
-            }
-            else if (signInResult.IsNotAllowed)
-            {
-                return new ServiceResponse
-                {
-                    Success = false,
-                    Message = "Confirm your email."
-                };
-            }
-            else if (signInResult.IsLockedOut)
-            {
-                return new ServiceResponse
-                {
-                    Success = false,
-                    Message = "User is blocked."
-                };
-            }
-            else
-            {
-                return new ServiceResponse
-                {
-                    Success = false,
-                    Message = "Login or password incorrect."
-                };
-            }
-        }
+				return new ServiceResponse
+				{
+					AccessToken = tokens.token,
+					RefreshToken = tokens.refreshToken.Token,
+					Success = true,
+					Message = "User logged in successfully."
+				};
+			}
+			else if (signInResult.IsNotAllowed)
+			{
+				return new ServiceResponse
+				{
+					Success = false,
+					Message = "Confirm your email."
+				};
+			}
+			else if (signInResult.IsLockedOut)
+			{
+				return new ServiceResponse
+				{
+					Success = false,
+					Message = "User is blocked."
+				};
+			}
+			else
+			{
+				return new ServiceResponse
+				{
+					Success = false,
+					Message = "Login or password incorrect."
+				};
+			}
+		}
 
-        public async Task<ServiceResponse> LogoutAsync(string userId)
-        {
-            var user = await _userManager.FindByIdAsync(userId);
-            if(user == null)
-            {
-                return new ServiceResponse
-                {
-                    Success = false,
-                    Message = "User not found."
-                };
-            }
-            IEnumerable<RefreshToken> tokens = await _jwtService.GetAll();
-            foreach (RefreshToken token in tokens)
-            {
-                await _jwtService.Delete(token);
-            }
+		public async Task<ServiceResponse> LogoutAsync(string userId)
+		{
+			var user = await _userManager.FindByIdAsync(userId);
+			if (user == null)
+			{
+				return new ServiceResponse
+				{
+					Success = false,
+					Message = "User not found."
+				};
+			}
+			IEnumerable<RefreshToken> tokens = await _jwtService.GetAll();
+			foreach (RefreshToken token in tokens)
+			{
+				await _jwtService.Delete(token);
+			}
 
-            return new ServiceResponse
-            {
-                Success = true,
-                Message = "User successfully logged out."
-            };
-        }
+			return new ServiceResponse
+			{
+				Success = true,
+				Message = "User successfully logged out."
+			};
+		}
 
-        public async Task<ServiceResponse> RefreshTokenAsync(TokenRequestDto model)
-        {
-            return await _jwtService.VerifyTokenAsync(model);
+		public async Task<ServiceResponse> RefreshTokenAsync(TokenRequestDto model)
+		{
+			return await _jwtService.VerifyTokenAsync(model);
 		}
 		public async Task<ServiceResponse> GetAllUsersAsync()
 		{
@@ -149,7 +149,7 @@ namespace Compass.Core.Services
 
 		public async Task<ServiceResponse> GetUserProfileAsync(string id)
 		{
-            var user = await _userManager.FindByIdAsync(id);
+			var user = await _userManager.FindByIdAsync(id);
 			if (user == null)
 			{
 				return new ServiceResponse
@@ -159,14 +159,50 @@ namespace Compass.Core.Services
 				};
 			}
 
-            GetUsersDto mapped = _mapper.Map<AppUser, GetUsersDto>(user);
-            mapped.Role = (await _userManager.GetRolesAsync(user)).First();
+			GetUsersDto mapped = _mapper.Map<AppUser, GetUsersDto>(user);
+			mapped.Role = (await _userManager.GetRolesAsync(user)).First();
 
-            return new ServiceResponse
-            {
-                Success = true,
-                Message = "Profile successfully loaded.",
-                Payload = mapped
+			return new ServiceResponse
+			{
+				Success = true,
+				Message = "Profile successfully loaded.",
+				Payload = mapped
+			};
+		}
+
+		public async Task<ServiceResponse> UpdateUserAsync(UpdateUserDto model)
+		{
+			var user = await _userManager.FindByIdAsync(model.Id);
+			if (user == null)
+			{
+				return new ServiceResponse
+				{
+					Success = false,
+					Message = "User not found."
+				};
+			}
+
+			var checkPassword = await _userManager.CheckPasswordAsync(user, model.Password);
+			if (checkPassword == false)
+			{
+				return new ServiceResponse
+				{
+					Success = false,
+					Message = "Incorrect password."
+				};
+			}
+
+			user.Name = model.Name;
+			user.Surname = model.Surname;
+			user.Email = model.Email;
+			user.PhoneNumber = model.PhoneNumber;
+
+			await _userManager.UpdateAsync(user);
+
+			return new ServiceResponse
+			{
+				Success = true,
+				Message = "Profile updated!"
 			};
 		}
 	}
