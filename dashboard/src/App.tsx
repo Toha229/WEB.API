@@ -8,6 +8,7 @@ import SignIn from "./pages/auth/singIn";
 import SignUp from "./pages/auth/signUp";
 import { useTypedSelector } from "./hooks/useTypedSelector";
 import Profile from "./pages/profile";
+import EditUser from "./pages/editUser";
 
 const App: React.FC = () => {
   const { isAuth, user } = useTypedSelector((store) => store.UserReducer);
@@ -21,6 +22,7 @@ const App: React.FC = () => {
               <Route path="users" element={<Users />} />
               <Route path="sign-up" element={<SignUp />} />
               <Route path="profile" element={<Profile />} />
+              <Route path="edituser" element={<EditUser />} />
             </Route>
           )}
           {user.role === "Users" && (

@@ -205,5 +205,31 @@ namespace Compass.Core.Services
 				Message = "Profile updated!"
 			};
 		}
+
+		public async Task<ServiceResponse> EditUserAsync(EditUserDto model)
+		{
+			var user = await _userManager.FindByEmailAsync(model.Email);
+			if (user == null)
+			{
+				return new ServiceResponse
+				{
+					Success = false,
+					Message = "User not found."
+				};
+			}
+
+			user.Name = model.Name;
+			user.Surname = model.Surname;
+			user.Email = model.Email;
+			user.PhoneNumber = model.PhoneNumber;
+
+			await _userManager.UpdateAsync(user);
+
+			return new ServiceResponse
+			{
+				Success = true,
+				Message = "Profile updated!"
+			};
+		}
 	}
 }

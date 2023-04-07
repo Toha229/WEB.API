@@ -14,7 +14,9 @@ export enum UserActionType {
   FINISH_REQUEST = "FINISH_REQUEST",
   LOGIN_USER_SUCCESS = "LOGIN_USER_SUCCESS",
   LOGOUT_USER = "LOGOUT_USER",
-  USER_PROFILE_LOADED = "USER_PROFILE_LOADED"
+  USER_PROFILE_LOADED = "USER_PROFILE_LOADED",
+  EDIT_USER = "EDIT_USER",
+  USER_EDITED = "USER_EDITED"
 }
 
 interface LoginUserSuccessAction {
@@ -45,10 +47,22 @@ interface UserProfileLoadedAction {
   payload: any;
 }
 
+interface EditUserAction {
+  type: UserActionType.EDIT_USER;
+  payload: any;
+}
+
+interface UserEditedAction {
+  type: UserActionType.USER_EDITED;
+  payload: any;
+}
+
 export type UserActions =
   | LogoutUserRequestAction
   | LoginUserSuccessAction
   | FinishRequestAction
   | StartRequestAction
   | AllUsersLoadedAction
-  | UserProfileLoadedAction;
+  | UserProfileLoadedAction
+  | EditUserAction
+  | UserEditedAction;

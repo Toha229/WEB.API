@@ -64,17 +64,35 @@ namespace Compass.Api.Controllers
 		{
 			var validator = new UpdateUserValidation();
 			var validatinResult = await validator.ValidateAsync(model);
-            if (validatinResult.IsValid)
-            {
-                var result = await _userService.UpdateUserAsync(model);
+			if (validatinResult.IsValid)
+			{
+				var result = await _userService.UpdateUserAsync(model);
 
-                if (result.Success)
-                {
-                    return Ok(result);
-                }
-                return BadRequest(result);
-            }
-            return BadRequest(validatinResult.Errors);
+				if (result.Success)
+				{
+					return Ok(result);
+				}
+				return BadRequest(result);
+			}
+			return BadRequest(validatinResult.Errors);
+		}
+
+		[HttpPost("EditUser")]
+		public async Task<IActionResult> UpdateUserAsync([FromBody] EditUserDto model)
+		{
+			var validator = new EditUserValidation();
+			var validatinResult = await validator.ValidateAsync(model);
+			if (validatinResult.IsValid)
+			{
+				var result = await _userService.EditUserAsync(model);
+
+				if (result.Success)
+				{
+					return Ok(result);
+				}
+				return BadRequest(result);
+			}
+			return BadRequest(validatinResult.Errors);
 		}
 
 		[AllowAnonymous]

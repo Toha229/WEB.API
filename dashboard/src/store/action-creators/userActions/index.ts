@@ -1,6 +1,7 @@
 import { Dispatch } from "redux";
 import { UserActionType, UserActions } from "../../reducers/userReducers/types";
 import {
+  Edit,
   GetProfile,
   GetUsers,
   Incert,
@@ -88,6 +89,26 @@ export const UpdateUser = (user: any) => {
     try {
       dispatch({ type: UserActionType.START_REQUEST });
       const data = await Update(user);
+      const { response } = data;
+
+      if (response.success) {
+        toast.success(response.message);
+      } else {
+        toast.error(response.message);
+      }
+      dispatch({
+        type: UserActionType.FINISH_REQUEST,
+        payload: response.message,
+      });
+    } catch {}
+  };
+};
+
+export const EditUser = (user: any) => {
+  return async (dispatch: Dispatch<UserActions>) => {
+    try {
+      dispatch({ type: UserActionType.START_REQUEST });
+      const data = await Edit(user);
       const { response } = data;
 
       if (response.success) {

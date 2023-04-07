@@ -23,6 +23,8 @@ import { visuallyHidden } from "@mui/utils";
 import { useActions } from "../../hooks/useActions";
 import { useTypedSelector } from "../../hooks/useTypedSelector";
 import Button from "@mui/material/Button";
+import { useDispatch } from "react-redux";
+import { Navigate } from "react-router-dom";
 
 interface Data {
   id: number;
@@ -155,6 +157,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
     (property: keyof Data) => (event: React.MouseEvent<unknown>) => {
       onRequestSort(event, property);
     };
+  const { user } = useTypedSelector((store) => store.UserReducer);
   return (
     <TableHead>
       <TableRow>
@@ -190,9 +193,11 @@ function EnhancedTableHead(props: EnhancedTableProps) {
             </TableSortLabel>
           </TableCell>
         ))}
-        <TableCell align="right">
-          <Box>Edit</Box>
-        </TableCell>
+        {user.role === "Administrators" ? (
+          <TableCell align="right">
+            <Box>Edit</Box>
+          </TableCell>
+        ) : null}
       </TableRow>
     </TableHead>
   );
@@ -264,6 +269,10 @@ const Users: React.FC = () => {
 
   const { GetAllUsers } = useActions();
   const { allUsers } = useTypedSelector((store) => store.UserReducer);
+  const { user } = useTypedSelector((store) => store.UserReducer);
+  const { selectedUser } = useTypedSelector((store) => store.UserReducer);
+  const dispatch = useDispatch();
+
   useEffect(() => {
     GetAllUsers();
   }, []);
@@ -280,7 +289,7 @@ const Users: React.FC = () => {
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelected = allUsers.map((n: any) => n.name);
+      const newSelected = allUsers.map((n: any) => n.email);
       setSelected(newSelected);
       return;
     }
@@ -321,6 +330,20 @@ const Users: React.FC = () => {
   const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDense(event.target.checked);
   };
+
+  const handleEditClick = (row: any) => {
+    console.log(row);
+    dispatch({
+      type: "EDIT_USER",
+      payload: {
+        ...row,
+      },
+    });
+  };
+
+  if (selectedUser) {
+    return <Navigate to="/dashboard/edituser/" />;
+  }
 
   const isSelected = (name: any) => selected.indexOf(name) !== -1;
 
@@ -377,9 +400,16 @@ const Users: React.FC = () => {
                       <TableCell align="right">{row.email}</TableCell>
                       <TableCell align="right">{row.phoneNumber}</TableCell>
                       <TableCell align="right">{row.role}</TableCell>
-                      <TableCell align="right">
-                        <Button variant="outlined">Edit</Button>
-                      </TableCell>
+                      {user.role === "Administrators" ? (
+                        <TableCell align="right">
+                          <Button
+                            variant="outlined"
+                            onClick={() => handleEditClick(row)}
+                          >
+                            Edit
+                          </Button>
+                        </TableCell>
+                      ) : null}
                     </TableRow>
                   );
                 })}
