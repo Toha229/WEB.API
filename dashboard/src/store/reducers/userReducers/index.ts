@@ -17,12 +17,12 @@ const UserReducer = (state = initialState, action: UserActions): UserState => {
     case UserActionType.ALL_USERS_LOADED:
       return { ...state, loading: false, allUsers: action.payload };
     case UserActionType.USER_PROFILE_LOADED:
-      return { ...state, loading: false, profile: action.payload };
+      return { ...state, loading: false, profile: action.payload, message: "" };
     case UserActionType.FINISH_REQUEST:
       return { ...state, loading: false, message: action.payload };
     case UserActionType.EDIT_USER:
         return { ...state, loading: false, selectedUser: action.payload };
-    case UserActionType.USER_EDITED:
+    case UserActionType.PROFILE_UPDATED:
       return { ...state, loading: false, selectedUser: null, message: "" };
     case UserActionType.LOGIN_USER_SUCCESS:
       return {

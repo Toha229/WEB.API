@@ -16,7 +16,7 @@ export enum UserActionType {
   LOGOUT_USER = "LOGOUT_USER",
   USER_PROFILE_LOADED = "USER_PROFILE_LOADED",
   EDIT_USER = "EDIT_USER",
-  USER_EDITED = "USER_EDITED"
+  PROFILE_UPDATED = "PROFILE_UPDATED"
 }
 
 interface LoginUserSuccessAction {
@@ -53,7 +53,7 @@ interface EditUserAction {
 }
 
 interface UserEditedAction {
-  type: UserActionType.USER_EDITED;
+  type: UserActionType.PROFILE_UPDATED;
   payload: any;
 }
 

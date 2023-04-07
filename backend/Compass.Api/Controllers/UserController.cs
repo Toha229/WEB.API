@@ -95,6 +95,24 @@ namespace Compass.Api.Controllers
 			return BadRequest(validatinResult.Errors);
 		}
 
+		[HttpPost("ChangePassword")]
+		public async Task<IActionResult> ChangePasswordAsync([FromBody] ChangePasswordDto model)
+		{
+			var validator = new ChangePasswordValidation();
+			var validatinResult = await validator.ValidateAsync(model);
+			if (validatinResult.IsValid)
+			{
+				var result = await _userService.ChangePasswordAsync(model);
+
+				if (result.Success)
+				{
+					return Ok(result);
+				}
+				return BadRequest(result);
+			}
+			return BadRequest(validatinResult.Errors);
+		}
+
 		[AllowAnonymous]
         [HttpPost("RefreshToken")]
         public async Task<IActionResult> RefreshToken([FromBody] TokenRequestDto model)

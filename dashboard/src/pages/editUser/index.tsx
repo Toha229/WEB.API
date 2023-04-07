@@ -44,7 +44,7 @@ const EditUser: React.FC = () => {
 
   if (message === "Profile updated!" || selectedUser == null) {
     dispatch({
-      type: UserActionType.USER_EDITED,
+      type: UserActionType.PROFILE_UPDATED,
     });
     return <Navigate to="/dashboard/users/" />;
   }

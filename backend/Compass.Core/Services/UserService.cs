@@ -231,5 +231,36 @@ namespace Compass.Core.Services
 				Message = "Profile updated!"
 			};
 		}
+
+		public async Task<ServiceResponse> ChangePasswordAsync(ChangePasswordDto model)
+		{
+			var user = await _userManager.FindByIdAsync(model.Id);
+			if (user == null)
+			{
+				return new ServiceResponse
+				{
+					Success = false,
+					Message = "User not found."
+				};
+			}
+
+			var res = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+			if (res.Succeeded)
+			{
+				return new ServiceResponse
+				{
+					Success = true,
+					Message = "Password changed."
+				};
+			}
+			else
+			{
+				return new ServiceResponse
+				{
+					Success = false,
+					Message = "Incorrect password."
+				};
+			}
+		}
 	}
 }
