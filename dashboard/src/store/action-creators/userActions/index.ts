@@ -95,6 +95,7 @@ export const UpdateUser = (user: any) => {
       if (response.success) {
         toast.success(response.message);
       } else {
+        console.log("RESPONCE", response)
         toast.error(response.message);
       }
       dispatch({
@@ -113,6 +114,7 @@ export const EditUser = (user: any) => {
       const { response } = data;
 
       if (response.success) {
+        localStorage.removeItem("updateUser");
         toast.success(response.message);
       } else {
         toast.error(response.message);

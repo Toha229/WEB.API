@@ -21,11 +21,15 @@ import { UserActionType } from "../../store/reducers/userReducers/types";
 const EditUser: React.FC = () => {
   const { user } = useTypedSelector((store) => store.UserReducer);
   const { message } = useTypedSelector((store) => store.UserReducer);
-  const { selectedUser } = useTypedSelector((store) => store.UserReducer);
-  const { GetUserProfile } = useActions();
+  // const { selectedUser } = useTypedSelector((store) => store.UserReducer);
   const dispatch = useDispatch();
 
   const { EditUser } = useActions();
+  let updateUser = localStorage.getItem("updateUser");
+  if(updateUser == null){
+    return<Navigate to="/dashboard/users"></Navigate>
+  }
+  const selectedUser = JSON.parse(updateUser);
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -41,13 +45,6 @@ const EditUser: React.FC = () => {
 
     EditUser(newUser);
   };
-
-  if (message === "Profile updated!" || selectedUser == null) {
-    dispatch({
-      type: UserActionType.PROFILE_UPDATED,
-    });
-    return <Navigate to="/dashboard/users/" />;
-  }
 
   const initialValues = {
     email: selectedUser.email,

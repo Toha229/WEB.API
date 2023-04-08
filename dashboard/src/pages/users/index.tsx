@@ -24,7 +24,8 @@ import { useActions } from "../../hooks/useActions";
 import { useTypedSelector } from "../../hooks/useTypedSelector";
 import Button from "@mui/material/Button";
 import { useDispatch } from "react-redux";
-import { Navigate } from "react-router-dom";
+import { Link, Navigate, redirect } from "react-router-dom";
+import { stringify } from "querystring";
 
 interface Data {
   id: number;
@@ -266,11 +267,12 @@ const Users: React.FC = () => {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
+  
   const { GetAllUsers } = useActions();
   const { allUsers } = useTypedSelector((store) => store.UserReducer);
   const { user } = useTypedSelector((store) => store.UserReducer);
   const { selectedUser } = useTypedSelector((store) => store.UserReducer);
+  const [redirect, setRedirect] = React.useState<boolean>(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -333,16 +335,18 @@ const Users: React.FC = () => {
 
   const handleEditClick = (row: any) => {
     console.log(row);
-    dispatch({
-      type: "EDIT_USER",
-      payload: {
-        ...row,
-      },
-    });
+    // dispatch({
+    //   type: "EDIT_USER",
+    //   payload: {
+    //     ...row,
+    //   },
+    // });
+    localStorage.setItem("updateUser", JSON.stringify(row));
+    setRedirect(true);
   };
 
-  if (selectedUser) {
-    return <Navigate to="/dashboard/edituser/" />;
+  if (localStorage.getItem("updateUser") && redirect) {
+    return <Navigate to="/dashboard/edituser" />;
   }
 
   const isSelected = (name: any) => selected.indexOf(name) !== -1;
@@ -354,6 +358,9 @@ const Users: React.FC = () => {
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
+        <div style={{ width: "100%", textAlign: "right"}}>
+          <Link to="/dashboard/sign-up" style={{ margin: "5px" }}>Add New User</Link>
+        </div>
         <EnhancedTableToolbar numSelected={selected.length} />
         <TableContainer>
           <Table
