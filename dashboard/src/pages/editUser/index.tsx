@@ -26,8 +26,8 @@ const EditUser: React.FC = () => {
 
   const { EditUser } = useActions();
   let updateUser = localStorage.getItem("updateUser");
-  if(updateUser == null){
-    return<Navigate to="/dashboard/users"></Navigate>
+  if (updateUser == null) {
+    return <Navigate to="/dashboard/users"></Navigate>;
   }
   const selectedUser = JSON.parse(updateUser);
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {

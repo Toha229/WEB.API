@@ -14,7 +14,7 @@ import {
   Typography,
 } from "@mui/material";
 import { ChangePasswordSchema, ChangeProfileSchema } from "../auth/validation";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { UserActionType } from "../../store/reducers/userReducers/types";
 
@@ -25,6 +25,7 @@ const Profile: React.FC = () => {
   const { GetUserProfile } = useActions();
   const [changePassword, setChangePassword] = React.useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { UpdateUser, ChangeUserPassword } = useActions();
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -66,7 +67,7 @@ const Profile: React.FC = () => {
   }, []);
 
   if (message === "Profile updated!" || message === "Password changed.") {
-    return <Navigate to="/dashboard/" />;
+    navigate("/dashboard");
   }
 
   const initialValues = {
