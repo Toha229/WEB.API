@@ -10,53 +10,53 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Compass.Api.Controllers
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    [Route("api/[controller]")]
-    [ApiController]
-    public class UserController : ControllerBase
-    {
-        private readonly UserService _userService;
-        public UserController(UserService userService)
-        {
-            _userService = userService;
-        }
+	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+	[Route("api/[controller]")]
+	[ApiController]
+	public class UserController : ControllerBase
+	{
+		private readonly UserService _userService;
+		public UserController(UserService userService)
+		{
+			_userService = userService;
+		}
 
-        [HttpPost("register")]
-        public async Task<IActionResult> IncertAsync([FromBody] ResiterUserDto model)
-        {
-            var validator = new RegisterUserValidation();
-            var validatinResult = await validator.ValidateAsync(model);
-            if (validatinResult.IsValid)
-            {
-                var result = await _userService.IncertAsync(model);
-                return Ok(result);
-            }
-            return BadRequest(validatinResult.Errors);
-        }
+		[HttpPost("register")]
+		public async Task<IActionResult> IncertAsync([FromBody] ResiterUserDto model)
+		{
+			var validator = new RegisterUserValidation();
+			var validatinResult = await validator.ValidateAsync(model);
+			if (validatinResult.IsValid)
+			{
+				var result = await _userService.IncertAsync(model);
+				return Ok(result);
+			}
+			return BadRequest(validatinResult.Errors);
+		}
 
-        [AllowAnonymous]
-        [HttpPost("login")]
-        public async Task<IActionResult> LoginAsync([FromBody] LoginUserDto model)
-        {
-            var validator = new LoginUserValidation();
-            var validatinResult = await validator.ValidateAsync(model);
-            if (validatinResult.IsValid)
-            {
-                var result = await _userService.LoginAsync(model);
-                return Ok(result);
-            }
-            return BadRequest(validatinResult.Errors);
-        }
+		[AllowAnonymous]
+		[HttpPost("login")]
+		public async Task<IActionResult> LoginAsync([FromBody] LoginUserDto model)
+		{
+			var validator = new LoginUserValidation();
+			var validatinResult = await validator.ValidateAsync(model);
+			if (validatinResult.IsValid)
+			{
+				var result = await _userService.LoginAsync(model);
+				return Ok(result);
+			}
+			return BadRequest(validatinResult.Errors);
+		}
 
-        [HttpGet("logout")]
-        public async Task<IActionResult> LogoutAsync(string userId)
-        {
-            var result = await _userService.LogoutAsync(userId);
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-            return BadRequest(result);
+		[HttpGet("logout")]
+		public async Task<IActionResult> LogoutAsync(string userId)
+		{
+			var result = await _userService.LogoutAsync(userId);
+			if (result.Success)
+			{
+				return Ok(result);
+			}
+			return BadRequest(result);
 		}
 
 		[HttpPost("Update")]
@@ -78,7 +78,7 @@ namespace Compass.Api.Controllers
 		}
 
 		[HttpPost("EditUser")]
-		public async Task<IActionResult> UpdateUserAsync([FromBody] EditUserDto model)
+		public async Task<IActionResult> EditUserAsync([FromBody] EditUserDto model)
 		{
 			var validator = new EditUserValidation();
 			var validatinResult = await validator.ValidateAsync(model);
@@ -113,25 +113,37 @@ namespace Compass.Api.Controllers
 			return BadRequest(validatinResult.Errors);
 		}
 
+		[HttpPost("DeleteUser")]
+		public async Task<IActionResult> DeleteUserAsync([FromBody] string email)
+		{
+			var result = await _userService.DeleteUserAsync(email);
+
+			if (result.Success)
+			{
+				return Ok(result);
+			}
+			return BadRequest(result);
+		}
+
 		[AllowAnonymous]
-        [HttpPost("RefreshToken")]
-        public async Task<IActionResult> RefreshToken([FromBody] TokenRequestDto model)
-        {
-            var validator = new TokenRequestValidation();
-            var validatinResult = await validator.ValidateAsync(model);
-            if (validatinResult.IsValid)
-            {
-                var result = await _userService.RefreshTokenAsync(model);
-                if (result.Success)
-                {
-                    return Ok(result);
-                }
-                return BadRequest(result);
-            }
-            else
-            {
-                return BadRequest(validatinResult.Errors);
-            }
+		[HttpPost("RefreshToken")]
+		public async Task<IActionResult> RefreshToken([FromBody] TokenRequestDto model)
+		{
+			var validator = new TokenRequestValidation();
+			var validatinResult = await validator.ValidateAsync(model);
+			if (validatinResult.IsValid)
+			{
+				var result = await _userService.RefreshTokenAsync(model);
+				if (result.Success)
+				{
+					return Ok(result);
+				}
+				return BadRequest(result);
+			}
+			else
+			{
+				return BadRequest(validatinResult.Errors);
+			}
 		}
 
 		[HttpPost("users")]

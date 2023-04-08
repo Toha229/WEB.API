@@ -111,6 +111,7 @@ const User = {
   Logout: (id: string) => request.get("/logout?userId=" + id),
   Update: (user: any) => request.post("/update", user),
   Edit: (user: any) => request.post("/edituser", user),
+  Delete: (email: string) => request.post("/DeleteUser", email),
   ChangePassword: (user: any) => request.post("/changepassword", user),
   GetUsers: () => request.post("/users"),
   GetProfile: (id: string) => request.get("/profile?userId=" + id),
@@ -162,6 +163,17 @@ export async function Update(user: any) {
 
 export async function Edit(user: any) {
   const data = await User.Edit(user)
+    .then((response) => {
+      return { response };
+    })
+    .catch((error) => {
+      return error.response;
+    });
+  return data;
+}
+
+export async function Delete(email: string) {
+  const data = await User.Delete(email)
     .then((response) => {
       return { response };
     })

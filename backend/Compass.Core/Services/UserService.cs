@@ -262,5 +262,26 @@ namespace Compass.Core.Services
 				};
 			}
 		}
+
+		public async Task<ServiceResponse> DeleteUserAsync(string email)
+		{
+			var user = await _userManager.FindByEmailAsync(email);
+			if (user == null)
+			{
+				return new ServiceResponse
+				{
+					Success = false,
+					Message = "User not found."
+				};
+			}
+
+			var res = await _userManager.DeleteAsync(user);
+
+			return new ServiceResponse
+			{
+				Success = true,
+				Message = "User deleted."
+			};
+		}
 	}
 }
