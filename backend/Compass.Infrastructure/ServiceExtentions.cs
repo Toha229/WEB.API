@@ -1,5 +1,6 @@
 ﻿using Compass.Core.Entities;
 using Compass.Core.Interfaces;
+using Compass.Core.Services;
 using Compass.Infrastructure.Context;
 using Compass.Infrastructure.Repository;
 using Microsoft.AspNetCore.Identity;
@@ -14,14 +15,19 @@ using System.Threading.Tasks;
 namespace Compass.Infrastructure
 {
     public static class ServiceExtentions
-    {
+	{
 
-        public static void AddDbContext(this IServiceCollection services, string connectionString)
-        {
-            services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(connectionString));
-        }
+		public static void AddDbContext(this IServiceCollection services, string connectionString)
+		{
+			services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(connectionString));
+		}
 
-        public static void AddIdentity(this IServiceCollection services)
+		public static void AddServices(this IServiceCollection services)
+		{
+            services.AddTransient<EmailService>();
+		}
+
+		public static void AddIdentity(this IServiceCollection services)
         {
             // Add Identity
             services.AddIdentity<AppUser, IdentityRole>(options =>
@@ -45,6 +51,6 @@ namespace Compass.Infrastructure
         public static void AddRepositories(this IServiceCollection services)
         {
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-        }
-    }
+		}
+	}
 }

@@ -2,7 +2,9 @@
 using Compass.Core.DTO_s;
 using Compass.Core.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,13 +19,17 @@ namespace Compass.Core.Services
 		private readonly JwtService _jwtService;
 		private readonly SignInManager<AppUser> _signInManager;
 		private readonly IMapper _mapper;
+		private readonly IConfiguration _configuration;
+		private readonly EmailService _emailService;
 
-		public UserService(JwtService jwtService, UserManager<AppUser> userManager, IMapper mapper, SignInManager<AppUser> signInManager)
+		public UserService(JwtService jwtService, UserManager<AppUser> userManager, IMapper mapper, SignInManager<AppUser> signInManager, IConfiguration configuration, EmailService emailService)
 		{
 			_userManager = userManager;
 			_mapper = mapper;
 			_signInManager = signInManager;
 			_jwtService = jwtService;
+			_configuration = configuration;
+			_emailService = emailService;
 		}
 		public async Task<ServiceResponse> IncertAsync(ResiterUserDto model)
 		{
@@ -32,6 +38,7 @@ namespace Compass.Core.Services
 			if (result.Succeeded)
 			{
 				await _userManager.AddToRoleAsync(mappedUser, model.Role);
+				await SendConfirmationEmailAsync(mappedUser);
 
 				return new ServiceResponse
 				{
@@ -48,6 +55,19 @@ namespace Compass.Core.Services
 					Message = result.Errors.Select(e => e.Description).FirstOrDefault()
 				};
 			}
+		}
+
+		public async Task SendConfirmationEmailAsync(AppUser newUser)
+		{
+			var token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
+
+			var encodedEmailToken = Encoding.UTF8.GetBytes(token);
+			var validEmailToken = WebEncoders.Base64UrlEncode(encodedEmailToken);
+
+			string url = $"{_configuration["HostSettings:URL"]}/confirmEmail?userid={newUser.Id}&token={validEmailToken}";
+
+			string emailBody = $"<h1>Confirm your email</h1> <a href='{url}'>Confirm now</a>";
+			await _emailService.SendEmailAsync(newUser.Email, "Email confirmation.", emailBody);
 		}
 
 		public async Task<ServiceResponse> LoginAsync(LoginUserDto model)

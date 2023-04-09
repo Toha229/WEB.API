@@ -45,6 +45,7 @@ string connStr = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext(connStr);
 // Add identity
 builder.Services.AddIdentity();
+builder.Services.AddServices();
 // Add core services
 builder.Services.AddCoreServices();
 // Add automapper
