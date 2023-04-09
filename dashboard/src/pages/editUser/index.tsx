@@ -17,6 +17,7 @@ import { EditUserSchema } from "../auth/validation";
 import { Navigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { UserActionType } from "../../store/reducers/userReducers/types";
+import { ConfirmUserEmail } from "../../store/action-creators/userActions";
 
 const EditUser: React.FC = () => {
   const { user } = useTypedSelector((store) => store.UserReducer);

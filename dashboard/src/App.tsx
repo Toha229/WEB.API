@@ -9,6 +9,7 @@ import SignUp from "./pages/auth/signUp";
 import { useTypedSelector } from "./hooks/useTypedSelector";
 import Profile from "./pages/profile";
 import EditUser from "./pages/editUser";
+import ConfirmEmail from "./pages/confirmEmail";
 
 const App: React.FC = () => {
   const { isAuth, user } = useTypedSelector((store) => store.UserReducer);
@@ -36,6 +37,7 @@ const App: React.FC = () => {
       )}
       <Route path="/" element={<SignIn />} />
       <Route path="/dashboard/" element={<SignIn />} />
+      <Route path="/confirmEmail/" element={<ConfirmEmail />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

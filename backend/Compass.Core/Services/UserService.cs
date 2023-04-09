@@ -64,6 +64,8 @@ namespace Compass.Core.Services
 			var encodedEmailToken = Encoding.UTF8.GetBytes(token);
 			var validEmailToken = WebEncoders.Base64UrlEncode(encodedEmailToken);
 
+
+
 			string url = $"{_configuration["HostSettings:URL"]}/confirmEmail?userid={newUser.Id}&token={validEmailToken}";
 
 			string emailBody = $"<h1>Confirm your email</h1> <a href='{url}'>Confirm now</a>";
@@ -301,6 +303,37 @@ namespace Compass.Core.Services
 			{
 				Success = true,
 				Message = "User deleted."
+			};
+		}
+
+		public async Task<ServiceResponse> ConfirmEmailAsync(ConfirmEmailDto model)
+		{
+			var user = await _userManager.FindByIdAsync(model.Id);
+			if (user == null)
+			{
+				return new ServiceResponse
+				{
+					Success = false,
+					Message = "User not found."
+				};
+			}
+
+			var token = WebEncoders.Base64UrlDecode(model.Token);
+			var stoken = Encoding.UTF8.GetString(token);
+
+			var res = await _userManager.ConfirmEmailAsync(user, stoken);
+			if (res.Succeeded)
+			{
+				return new ServiceResponse
+				{
+					Success = true,
+					Message = "Email confirmed!"
+				};
+			}
+			return new ServiceResponse
+			{
+				Success = false,
+				Message = "Invalid token."
 			};
 		}
 	}

@@ -35,6 +35,18 @@ namespace Compass.Api.Controllers
 		}
 
 		[AllowAnonymous]
+		[HttpPost("ConfirmEmail")]
+		public async Task<IActionResult> ConfirmEmailAsync([FromBody] ConfirmEmailDto model)
+		{
+			var result = await _userService.ConfirmEmailAsync(model);
+			if (result.Success)
+			{
+				return Ok(result);
+			}
+			return BadRequest(result);
+		}
+
+		[AllowAnonymous]
 		[HttpPost("login")]
 		public async Task<IActionResult> LoginAsync([FromBody] LoginUserDto model)
 		{

@@ -2,6 +2,7 @@ import { Dispatch } from "redux";
 import { UserActionType, UserActions } from "../../reducers/userReducers/types";
 import {
   ChangePassword,
+  Confirm,
   Delete,
   Edit,
   GetProfile,
@@ -36,6 +37,26 @@ export const IncertUser = (user: any) => {
     } catch {}
   };
 };
+
+// export const ConfirmUserEmail = (emailData: any) => {
+//   console.log(emailData);
+//   return async (dispatch: Dispatch<UserActions>) => {
+//     setTimeout(() => console.log("response"), 100);
+//     try {
+//       dispatch({ type: UserActionType.START_REQUEST });
+//       const data = await Confirm(emailData);
+//       const { response } = data;
+
+//       console.log(response);
+//       if (response.success) {
+//         dispatch({
+//           type: UserActionType.FINISH_REQUEST,
+//           payload: response.payload,
+//         });
+//       }
+//     } catch {}
+//   };
+// };
 
 export const LoginUser = (user: any) => {
   return async (dispatch: Dispatch<UserActions>) => {
@@ -86,6 +107,8 @@ export const LogOut = (id: string) => {
   };
 };
 
+export const ConfirmUserEmail = () => {};
+
 export const UpdateUser = (user: any) => {
   return async (dispatch: Dispatch<UserActions>) => {
     try {
@@ -96,7 +119,7 @@ export const UpdateUser = (user: any) => {
       if (response.success) {
         toast.success(response.message);
       } else {
-        console.log("RESPONCE", response)
+        console.log("RESPONCE", response);
         toast.error(response.message);
       }
       dispatch({
@@ -197,7 +220,7 @@ export const GetAllUsers = () => {
         });
       }
     } catch {}
-  }
+  };
 };
 
 export const GetUserProfile = (id: string) => {
@@ -213,5 +236,5 @@ export const GetUserProfile = (id: string) => {
         });
       }
     } catch {}
-  }
+  };
 };

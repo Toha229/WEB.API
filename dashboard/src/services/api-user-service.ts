@@ -107,6 +107,7 @@ const request = {
 
 const User = {
   Incert: (user: any) => request.post("/register", user),
+  Confirm: (emailData: any) => request.post("/confirmemail", emailData),
   Login: (user: any) => request.post("/login", user),
   Logout: (id: string) => request.get("/logout?userId=" + id),
   Update: (user: any) => request.post("/update", user),
@@ -119,6 +120,17 @@ const User = {
 
 export async function Incert(user: any) {
   const data = await User.Incert(user)
+    .then((response) => {
+      return { response };
+    })
+    .catch((error) => {
+      return error.response;
+    });
+  return data;
+}
+
+export async function Confirm(emailData: any) {
+  const data = await User.Confirm(emailData)
     .then((response) => {
       return { response };
     })
@@ -196,13 +208,13 @@ export async function ChangePassword(user: any) {
 
 export async function GetUsers() {
   const data = await User.GetUsers()
-  .then((response) => {
-    return { response };
-  })
-  .catch((error) => {
-    return error.response;
-  });
-return data;
+    .then((response) => {
+      return { response };
+    })
+    .catch((error) => {
+      return error.response;
+    });
+  return data;
 }
 
 export async function GetProfile(id: string) {
