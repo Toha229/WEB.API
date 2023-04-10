@@ -1,29 +1,14 @@
 import React, { useEffect } from "react";
 import Box from "@mui/material/Box";
 import { useActions } from "../../hooks/useActions";
-import { useTypedSelector } from "../../hooks/useTypedSelector";
 import { Field, Formik } from "formik";
-import {
-  Button,
-  Container,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Button, Container, TextField, Typography } from "@mui/material";
 import { EditUserSchema } from "../auth/validation";
 import { Navigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { UserActionType } from "../../store/reducers/userReducers/types";
 import {} from "../../store/action-creators/userActions";
 
 const EditUser: React.FC = () => {
-  const { user } = useTypedSelector((store) => store.UserReducer);
-  const { message } = useTypedSelector((store) => store.UserReducer);
   // const { selectedUser } = useTypedSelector((store) => store.UserReducer);
-  const dispatch = useDispatch();
 
   const { EditUser } = useActions();
   const { DeleteUser } = useActions();

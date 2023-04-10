@@ -44,6 +44,13 @@ export const ConfirmUserEmail = (emailData: any) => {
     try {
       dispatch({ type: UserActionType.START_REQUEST });
       const data = await Confirm(emailData);
+      if (data == undefined) {
+        toast.error("Something went wrong");
+        dispatch({
+          type: UserActionType.FINISH_REQUEST,
+          payload: "",
+        });
+      }
       const { response } = data;
 
       if (response.success) {

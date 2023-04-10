@@ -133,6 +133,7 @@ export async function Incert(user: any) {
 export async function Confirm(emailData: any) {
   const data = await User.Confirm(emailData)
     .then((response) => {
+      console.log(response);
       return { response };
     })
     .catch((error) => {

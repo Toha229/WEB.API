@@ -231,7 +231,7 @@ namespace Compass.Core.Services
 
 		public async Task<ServiceResponse> EditUserAsync(EditUserDto model)
 		{
-			var user = await _userManager.FindByEmailAsync(model.Email);
+			var user = await _userManager.FindByEmailAsync(model.OldEmail);
 			if (user == null)
 			{
 				return new ServiceResponse
@@ -347,18 +347,19 @@ namespace Compass.Core.Services
 				};
 			}
 
-			var token = WebEncoders.Base64UrlDecode(model.Token);
-			var stoken = Encoding.UTF8.GetString(token);
-
-			var res = await _userManager.ConfirmEmailAsync(user, stoken);
-			if (res.Succeeded)
+			try
 			{
-				return new ServiceResponse
+				var token = WebEncoders.Base64UrlDecode(model.Token);
+				var res = await _userManager.ConfirmEmailAsync(user, Encoding.UTF8.GetString(token));
+				if (res.Succeeded)
 				{
-					Success = true,
-					Message = "Email confirmed!"
-				};
-			}
+					return new ServiceResponse
+					{
+						Success = true,
+						Message = "Email confirmed!"
+					};
+				}
+			}catch { }
 			return new ServiceResponse
 			{
 				Success = false,

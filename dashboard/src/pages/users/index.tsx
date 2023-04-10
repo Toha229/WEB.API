@@ -34,6 +34,7 @@ interface Data {
   email: string;
   phoneNumber: string;
   role: string;
+  isBlocked: boolean;
 }
 
 function createData(
@@ -42,7 +43,8 @@ function createData(
   surname: string,
   email: string,
   phoneNumber: string,
-  role: string
+  role: string,
+  isBlocked: boolean
 ): Data {
   return {
     id,
@@ -51,6 +53,7 @@ function createData(
     email,
     phoneNumber,
     role,
+    isBlocked,
   };
 }
 
@@ -131,6 +134,12 @@ const headCells: readonly HeadCell[] = [
     disablePadding: false,
     label: "Role",
   },
+  {
+    id: "isBlocked",
+    numeric: true,
+    disablePadding: false,
+    label: "Is Blocked",
+  },
 ];
 
 interface EnhancedTableProps {
@@ -194,11 +203,9 @@ function EnhancedTableHead(props: EnhancedTableProps) {
             </TableSortLabel>
           </TableCell>
         ))}
-        {user.role === "Administrators" ? (
-          <TableCell align="right">
-            <Box>Edit</Box>
-          </TableCell>
-        ) : null}
+        <TableCell align="right">
+          <Box>Edit</Box>
+        </TableCell>
       </TableRow>
     </TableHead>
   );
@@ -240,7 +247,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
           id="tableTitle"
           component="div"
         >
-          Nutrition
+          Users
         </Typography>
       )}
       {numSelected > 0 ? (
@@ -399,16 +406,17 @@ const Users: React.FC = () => {
                       <TableCell align="right">{row.email}</TableCell>
                       <TableCell align="right">{row.phoneNumber}</TableCell>
                       <TableCell align="right">{row.role}</TableCell>
-                      {user.role === "Administrators" ? (
-                        <TableCell align="right">
-                          <Button
-                            variant="outlined"
-                            onClick={() => handleEditClick(row)}
-                          >
-                            Edit
-                          </Button>
-                        </TableCell>
-                      ) : null}
+                      <TableCell align="right">
+                        {row.isBlocked ? "Yes" : "No"}
+                      </TableCell>
+                      <TableCell align="right">
+                        <Button
+                          variant="outlined"
+                          onClick={() => handleEditClick(row)}
+                        >
+                          Edit
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   );
                 })}

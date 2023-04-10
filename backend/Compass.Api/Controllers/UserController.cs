@@ -38,7 +38,11 @@ namespace Compass.Api.Controllers
 		[HttpPost("ConfirmEmail")]
 		public async Task<IActionResult> ConfirmEmailAsync([FromBody] ConfirmEmailDto model)
 		{
+			if (string.IsNullOrWhiteSpace(model.Id) || string.IsNullOrWhiteSpace(model.Token))
+				return NotFound();
+
 			var result = await _userService.ConfirmEmailAsync(model);
+
 			if (result.Success)
 			{
 				return Ok(result);
