@@ -159,6 +159,7 @@ namespace Compass.Core.Services
 			for (int i = 0; i < users.Count; i++)
 			{
 				mappedUsers[i].Role = (await _userManager.GetRolesAsync(users[i])).First();
+				mappedUsers[i].IsBlocked = (await _userManager.IsLockedOutAsync(users[i]));
 			}
 
 			return new ServiceResponse
@@ -297,12 +298,40 @@ namespace Compass.Core.Services
 				};
 			}
 
-			var res = await _userManager.DeleteAsync(user);
+			await _userManager.DeleteAsync(user);
 
 			return new ServiceResponse
 			{
 				Success = true,
 				Message = "User deleted."
+			};
+		}
+
+		public async Task<ServiceResponse> BlockUserAsync(string email)
+		{
+			var user = await _userManager.FindByEmailAsync(email);
+			if (user == null)
+			{
+				return new ServiceResponse
+				{
+					Success = false,
+					Message = "User not found."
+				};
+			}
+
+			if (await _userManager.IsLockedOutAsync(user))
+			{
+				await _userManager.SetLockoutEndDateAsync(user, DateTime.Now);
+			}
+			else
+			{
+				await _userManager.SetLockoutEndDateAsync(user, DateTime.Now.AddYears(5));
+			}
+
+			return new ServiceResponse
+			{
+				Success = true,
+				Message = "User blocked or unblocked."
 			};
 		}
 

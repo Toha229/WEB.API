@@ -137,6 +137,18 @@ namespace Compass.Api.Controllers
 			return BadRequest(result);
 		}
 
+		[HttpPost("BlockUser")]
+		public async Task<IActionResult> BlockUserAsync([FromBody] string email)
+		{
+			var result = await _userService.BlockUserAsync(email);
+
+			if (result.Success)
+			{
+				return Ok(result);
+			}
+			return BadRequest(result);
+		}
+
 		[AllowAnonymous]
 		[HttpPost("RefreshToken")]
 		public async Task<IActionResult> RefreshToken([FromBody] TokenRequestDto model)

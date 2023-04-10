@@ -17,7 +17,7 @@ import { EditUserSchema } from "../auth/validation";
 import { Navigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { UserActionType } from "../../store/reducers/userReducers/types";
-import { ConfirmUserEmail } from "../../store/action-creators/userActions";
+import {} from "../../store/action-creators/userActions";
 
 const EditUser: React.FC = () => {
   const { user } = useTypedSelector((store) => store.UserReducer);
@@ -27,6 +27,7 @@ const EditUser: React.FC = () => {
 
   const { EditUser } = useActions();
   const { DeleteUser } = useActions();
+  const { BlockUser } = useActions();
   let updateUser = localStorage.getItem("updateUser");
   if (updateUser == null) {
     return <Navigate to="/dashboard/users"></Navigate>;
@@ -153,15 +154,39 @@ const EditUser: React.FC = () => {
                 </Box>
               )}
             </Formik>
+            {selectedUser.isBlocked ? (
+              <Button
+                onClick={() => {
+                  BlockUser(selectedUser.email);
+                }}
+                fullWidth
+                variant="contained"
+                color="success"
+              >
+                Unblock User
+              </Button>
+            ) : (
+              <Button
+                onClick={() => {
+                  BlockUser(selectedUser.email);
+                }}
+                fullWidth
+                variant="contained"
+                color="warning"
+              >
+                Block User
+              </Button>
+            )}
             <Button
               onClick={() => {
                 DeleteUser(selectedUser.email);
               }}
+              style={{ marginTop: "10px" }}
               fullWidth
               variant="contained"
               color="error"
             >
-              DeleteUser
+              Delete User
             </Button>
           </Box>
         ) : null}

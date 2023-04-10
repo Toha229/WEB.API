@@ -16,8 +16,8 @@ import {
 import { Navigate, useSearchParams } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { Label } from "@mui/icons-material";
-import { ConfirmUserEmail } from "../../store/action-creators/userActions";
 import { useTypedSelector } from "../../hooks/useTypedSelector";
+import { useActions } from "../../hooks/useActions";
 interface RouteParams extends Record<string, string | undefined> {
   userid: string;
   token: string;
@@ -26,12 +26,15 @@ interface RouteParams extends Record<string, string | undefined> {
 const ConfirmEmail: React.FC = () => {
   const [searchParams] = useSearchParams();
   const { message } = useTypedSelector((store) => store.UserReducer);
+  const { ConfirmUserEmail } = useActions();
 
   const handleConfirmEmail = () => {
     const confirmData = {
       Id: searchParams.get("userid"),
       Token: searchParams.get("token"),
     };
+
+    ConfirmUserEmail(confirmData);
   };
 
   if (

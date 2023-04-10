@@ -1,6 +1,7 @@
 import { Dispatch } from "redux";
 import { UserActionType, UserActions } from "../../reducers/userReducers/types";
 import {
+  Block,
   ChangePassword,
   Confirm,
   Delete,
@@ -38,25 +39,25 @@ export const IncertUser = (user: any) => {
   };
 };
 
-// export const ConfirmUserEmail = (emailData: any) => {
-//   console.log(emailData);
-//   return async (dispatch: Dispatch<UserActions>) => {
-//     setTimeout(() => console.log("response"), 100);
-//     try {
-//       dispatch({ type: UserActionType.START_REQUEST });
-//       const data = await Confirm(emailData);
-//       const { response } = data;
+export const ConfirmUserEmail = (emailData: any) => {
+  return async (dispatch: Dispatch<UserActions>) => {
+    try {
+      dispatch({ type: UserActionType.START_REQUEST });
+      const data = await Confirm(emailData);
+      const { response } = data;
 
-//       console.log(response);
-//       if (response.success) {
-//         dispatch({
-//           type: UserActionType.FINISH_REQUEST,
-//           payload: response.payload,
-//         });
-//       }
-//     } catch {}
-//   };
-// };
+      if (response.success) {
+        toast.success(response.message);
+      } else {
+        toast.error(response.message);
+      }
+      dispatch({
+        type: UserActionType.FINISH_REQUEST,
+        payload: response.message,
+      });
+    } catch {}
+  };
+};
 
 export const LoginUser = (user: any) => {
   return async (dispatch: Dispatch<UserActions>) => {
@@ -107,8 +108,6 @@ export const LogOut = (id: string) => {
   };
 };
 
-export const ConfirmUserEmail = () => {};
-
 export const UpdateUser = (user: any) => {
   return async (dispatch: Dispatch<UserActions>) => {
     try {
@@ -156,6 +155,29 @@ export const DeleteUser = (email: string) => {
     try {
       dispatch({ type: UserActionType.START_REQUEST });
       const data = await Delete(email);
+      const { response } = data;
+
+      if (response.success) {
+        localStorage.removeItem("updateUser");
+        toast.success(response.message);
+      } else {
+        toast.error(response.message);
+      }
+      dispatch({
+        type: UserActionType.FINISH_REQUEST,
+        payload: response.message,
+      });
+    } catch {}
+  };
+};
+
+export const BlockUser = (email: string) => {
+  console.log(email);
+  return async (dispatch: Dispatch<UserActions>) => {
+    try {
+      console.log(email);
+      dispatch({ type: UserActionType.START_REQUEST });
+      const data = await Block(email);
       const { response } = data;
 
       if (response.success) {

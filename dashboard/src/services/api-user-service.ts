@@ -113,6 +113,7 @@ const User = {
   Update: (user: any) => request.post("/update", user),
   Edit: (user: any) => request.post("/edituser", user),
   Delete: (email: string) => request.post("/DeleteUser", email),
+  Block: (email: string) => request.post("/BlockUser", email),
   ChangePassword: (user: any) => request.post("/changepassword", user),
   GetUsers: () => request.post("/users"),
   GetProfile: (id: string) => request.get("/profile?userId=" + id),
@@ -186,6 +187,17 @@ export async function Edit(user: any) {
 
 export async function Delete(email: string) {
   const data = await User.Delete(email)
+    .then((response) => {
+      return { response };
+    })
+    .catch((error) => {
+      return error.response;
+    });
+  return data;
+}
+
+export async function Block(email: string) {
+  const data = await User.Block(email)
     .then((response) => {
       return { response };
     })
