@@ -193,7 +193,7 @@ namespace Compass.Core.Services
 			};
 		}
 
-		public async Task<ServiceResponse> UpdateUserAsync(UpdateUserDto model)
+		public async Task<ServiceResponse> UpdateProfileAsync(UpdateUserDto model)
 		{
 			var user = await _userManager.FindByIdAsync(model.Id);
 			if (user == null)
@@ -217,8 +217,21 @@ namespace Compass.Core.Services
 
 			user.Name = model.Name;
 			user.Surname = model.Surname;
-			user.Email = model.Email;
 			user.PhoneNumber = model.PhoneNumber;
+
+			if (user.Email != model.Email)
+			{
+				user.EmailConfirmed = false;
+				user.Email = model.Email;
+				await SendConfirmationEmailAsync(user);
+				await _userManager.UpdateAsync(user);
+
+				return new ServiceResponse
+				{
+					Success = true,
+					Message = "Confirm your email!"
+				};
+			}
 
 			await _userManager.UpdateAsync(user);
 
@@ -243,10 +256,21 @@ namespace Compass.Core.Services
 
 			user.Name = model.Name;
 			user.Surname = model.Surname;
-			user.Email = model.Email;
 			user.PhoneNumber = model.PhoneNumber;
 
+			if (user.Email != model.Email)
+			{
+				user.EmailConfirmed = false;
+				user.Email = model.Email;
+				await SendConfirmationEmailAsync(user);
+				foreach (var item in await _jwtService.GetAll())
+				{
+					await _jwtService.Delete(item);
+				}
+			}
+
 			await _userManager.UpdateAsync(user);
+
 
 			return new ServiceResponse
 			{
@@ -359,7 +383,8 @@ namespace Compass.Core.Services
 						Message = "Email confirmed!"
 					};
 				}
-			}catch { }
+			}
+			catch { }
 			return new ServiceResponse
 			{
 				Success = false,

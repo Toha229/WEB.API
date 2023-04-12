@@ -17,12 +17,14 @@ import { ChangePasswordSchema, ChangeProfileSchema } from "../auth/validation";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { UserActionType } from "../../store/reducers/userReducers/types";
+import { removeTokens } from "../../services/api-user-service";
 
 const Profile: React.FC = () => {
   const { profile } = useTypedSelector((store) => store.UserReducer);
   const { user } = useTypedSelector((store) => store.UserReducer);
   const { message } = useTypedSelector((store) => store.UserReducer);
   const { GetUserProfile } = useActions();
+  const { LogOut } = useActions();
   const [changePassword, setChangePassword] = React.useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -68,6 +70,10 @@ const Profile: React.FC = () => {
 
   if (message === "Profile updated!" || message === "Password changed.") {
     navigate("/dashboard");
+  }
+  if (message === "Confirm your email!") {
+    removeTokens();
+    navigate("/");
   }
 
   const initialValues = {

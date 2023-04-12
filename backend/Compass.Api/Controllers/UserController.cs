@@ -76,13 +76,13 @@ namespace Compass.Api.Controllers
 		}
 
 		[HttpPost("Update")]
-		public async Task<IActionResult> UpdateUserAsync([FromBody] UpdateUserDto model)
+		public async Task<IActionResult> UpdateProfileAsync([FromBody] UpdateUserDto model)
 		{
 			var validator = new UpdateUserValidation();
 			var validatinResult = await validator.ValidateAsync(model);
 			if (validatinResult.IsValid)
 			{
-				var result = await _userService.UpdateUserAsync(model);
+				var result = await _userService.UpdateProfileAsync(model);
 
 				if (result.Success)
 				{
