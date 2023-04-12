@@ -22,11 +22,6 @@ namespace Compass.Infrastructure
 			services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(connectionString));
 		}
 
-		public static void AddServices(this IServiceCollection services)
-		{
-            services.AddTransient<EmailService>();
-		}
-
 		public static void AddIdentity(this IServiceCollection services)
         {
             // Add Identity

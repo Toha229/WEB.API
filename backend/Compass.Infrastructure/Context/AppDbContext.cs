@@ -1,4 +1,5 @@
 ﻿using Compass.Core.Entities;
+using Compass.Core.Entities.Specification;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -14,6 +15,8 @@ namespace Compass.Infrastructure.Context
         public AppDbContext() : base() { }
         public AppDbContext(DbContextOptions options) : base(options) { }
         public DbSet<AppUser> AppUser { get; set; }
-        public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Product> Products { get; set; }
+		public DbSet<RefreshToken> RefreshTokens { get; set; }
     }
 }

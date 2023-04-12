@@ -19,10 +19,12 @@ namespace Compass.Core
 
             // Jwt Service
             services.AddTransient<JwtService>();
-        }
 
-        // Add automapper
-        public static void AddAutoMapper(this IServiceCollection services)
+            services.AddTransient<EmailService>();
+		}
+
+		// Add automapper
+		public static void AddAutoMapper(this IServiceCollection services)
         {
             services.AddAutoMapper(typeof(AutoMapperUserProfile));
         }
