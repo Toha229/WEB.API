@@ -66,7 +66,7 @@ instance.interceptors.response.use(
   }
 );
 
-function refreshAccessToken() {
+export function refreshAccessToken() {
   console.log("refreshAccessToken");
   return instance.post("/RefreshToken", {
     token: getAccessToken(),

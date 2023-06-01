@@ -1,0 +1,29 @@
+<div class="area-courses">
+  <div class="header-text-courses">COURSES</div>
+
+  <mat-card class="course-card" *ngFor="let course of courses">
+    <mat-card-header>
+      <mat-card-title class="course-title">{{ course.title }}</mat-card-title>
+      <mat-card-subtitle class="course-category">
+        {{ course.categoryName }}
+      </mat-card-subtitle>
+      <mat-card-subtitle class="course-price">
+        ${{ course.price }}
+      </mat-card-subtitle>
+    </mat-card-header>
+    <img
+      mat-card-image
+      class="course-image"
+      src="{{ course.imagePath }}"
+      alt="Photo of a Shiba Inu"
+    />
+    <mat-card-content>
+      <p class="my-subtitle">
+        {{ course.description }}
+      </p>
+    </mat-card-content>
+    <mat-card-actions class="course-actions">
+      <button mat-button class="take-course-button">TAKE THE COURSE</button>
+    </mat-card-actions>
+  </mat-card>
+</div>

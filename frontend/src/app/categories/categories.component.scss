@@ -1,0 +1,42 @@
+.category-title {
+  font-family: unquote("Roboto");
+  font-size: 18px;
+}
+.categories-grid-display {
+  display: flex;
+  flex-direction: column;
+}
+.area-categories {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  //background-color: rgb(244, 244, 244);
+  //border-radius: 1rem;
+  margin: 0px 25%;
+}
+.header-text-categories {
+  font-size: 2rem;
+  font-family: unquote("Roboto");
+  text-align: center;
+  width: 100%;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  margin-top: 1.5rem;
+}
+.category-name {
+  text-align: center;
+  font-family: unquote("Roboto");
+  font-size: 1.4rem;
+  font-weight: 500;
+}
+.category-desc {
+  text-align: center;
+  font-family: unquote("Roboto");
+  font-size: 1rem;
+  font-weight: 400;
+}
+.category-card {
+  margin: 2rem;
+  margin-top: 0;
+  padding: 0.5rem;
+}

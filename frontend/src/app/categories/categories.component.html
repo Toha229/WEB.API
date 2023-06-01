@@ -1,0 +1,11 @@
+<div class="area-categories">
+  <div class="header-text-categories">CATEGORIES</div>
+  <mat-card class="category-card" *ngFor="let category of categories">
+    <mat-card-content class="category-name">{{
+      category.name
+    }}</mat-card-content>
+    <mat-card-content class="category-desc">{{
+      category.description
+    }}</mat-card-content>
+  </mat-card>
+</div>

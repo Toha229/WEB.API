@@ -1,0 +1,52 @@
+.my-subtitle {
+  font-family: unquote("Roboto");
+  font-size: 16px;
+}
+.course-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+.course-card {
+  width: 15rem;
+  margin: 3rem;
+  border-radius: 1rem;
+  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2), 0 6px 15px 0 rgba(0, 0, 0, 0.19);
+  display: inline-flex;
+  height: 500px;
+}
+.area-courses {
+  //   justify-content: space-between;
+  //   flex-wrap: wrap;
+  margin: 0px 5%;
+}
+.course-category {
+  color: black;
+  font-size: 1rem;
+}
+.course-price {
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+.course-title {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+.header-text-courses {
+  font-size: 2rem;
+  font-family: unquote("Roboto");
+  text-align: center;
+  width: 100%;
+  font-weight: 600;
+  margin-top: 1.5rem;
+}
+.course-image {
+  margin: 1rem;
+  border-radius: 0.2rem;
+}
+.take-course-button {
+  background-color: #a590f7;
+  margin: 1rem;
+  padding: 1rem;
+  bottom: 0;
+  position: absolute;
+}

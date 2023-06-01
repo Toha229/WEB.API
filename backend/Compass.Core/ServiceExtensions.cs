@@ -21,12 +21,18 @@ namespace Compass.Core
             services.AddTransient<JwtService>();
 
             services.AddTransient<EmailService>();
+
+            services.AddTransient<ICategoryService, CategoryService>();
+
+            services.AddTransient<ICourseService, CourseService>();
 		}
 
 		// Add automapper
 		public static void AddAutoMapper(this IServiceCollection services)
         {
             services.AddAutoMapper(typeof(AutoMapperUserProfile));
-        }
+            services.AddAutoMapper(typeof(AutoMapperCategoryProfile));
+            services.AddAutoMapper(typeof(AutoMapperCourseProfile));
+		}
     }
 }

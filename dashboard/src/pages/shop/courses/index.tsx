@@ -1,3 +1,4 @@
+import { useTypedSelector } from "../../../hooks/useTypedSelector";
 import { alpha } from "@mui/material/styles";
 import React, { useEffect } from "react";
 import Box from "@mui/material/Box";
@@ -18,43 +19,19 @@ import Tooltip from "@mui/material/Tooltip";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import DeleteIcon from "@mui/icons-material/Delete";
-import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
 import { useActions } from "../../../hooks/useActions";
-import { useTypedSelector } from "../../../hooks/useTypedSelector";
-import Button from "@mui/material/Button";
-import { useDispatch } from "react-redux";
-import { Link, Navigate, redirect, useNavigate } from "react-router-dom";
-import { stringify } from "querystring";
+import { Button, Link } from "@mui/material";
+import { Navigate, useNavigate } from "react-router-dom";
 
 interface Data {
   id: number;
-  name: string;
-  surname: string;
-  email: string;
-  phoneNumber: string;
-  role: string;
-  isBlocked: boolean;
-}
-
-function createData(
-  id: number,
-  name: string,
-  surname: string,
-  email: string,
-  phoneNumber: string,
-  role: string,
-  isBlocked: boolean
-): Data {
-  return {
-    id,
-    name,
-    surname,
-    email,
-    phoneNumber,
-    role,
-    isBlocked,
-  };
+  title: string;
+  description: string;
+  price: string;
+  imagePath: string;
+  categoryName: string;
+  action: string;
 }
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -104,41 +81,41 @@ interface HeadCell {
 }
 
 const headCells: readonly HeadCell[] = [
+  // {
+  //   id: "id",
+  //   numeric: false,
+  //   disablePadding: true,
+  //   label: "Id",
+  // },
   {
-    id: "name",
+    id: "title",
     numeric: true,
     disablePadding: false,
-    label: "Name",
+    label: "Title",
   },
   {
-    id: "surname",
+    id: "description",
     numeric: true,
     disablePadding: false,
-    label: "Surname",
+    label: "Description",
   },
   {
-    id: "email",
+    id: "price",
     numeric: true,
     disablePadding: false,
-    label: "Email",
+    label: "Price",
   },
   {
-    id: "phoneNumber",
+    id: "imagePath",
     numeric: true,
     disablePadding: false,
-    label: "Phone Number",
+    label: "Image",
   },
   {
-    id: "role",
+    id: "categoryName",
     numeric: true,
     disablePadding: false,
-    label: "Role",
-  },
-  {
-    id: "isBlocked",
-    numeric: true,
-    disablePadding: false,
-    label: "Is Blocked",
+    label: "Category",
   },
 ];
 
@@ -152,6 +129,7 @@ interface EnhancedTableProps {
   order: Order;
   orderBy: string;
   rowCount: number;
+  user: any;
 }
 
 function EnhancedTableHead(props: EnhancedTableProps) {
@@ -161,13 +139,14 @@ function EnhancedTableHead(props: EnhancedTableProps) {
     orderBy,
     numSelected,
     rowCount,
+    user,
     onRequestSort,
   } = props;
   const createSortHandler =
     (property: keyof Data) => (event: React.MouseEvent<unknown>) => {
       onRequestSort(event, property);
     };
-  const { user } = useTypedSelector((store) => store.UserReducer);
+
   return (
     <TableHead>
       <TableRow>
@@ -177,15 +156,12 @@ function EnhancedTableHead(props: EnhancedTableProps) {
             indeterminate={numSelected > 0 && numSelected < rowCount}
             checked={rowCount > 0 && numSelected === rowCount}
             onChange={onSelectAllClick}
-            inputProps={{
-              "aria-label": "select all desserts",
-            }}
           />
         </TableCell>
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align={headCell.numeric ? "right" : "left"}
+            align={headCell.numeric ? "left" : "left"}
             padding={headCell.disablePadding ? "none" : "normal"}
             sortDirection={orderBy === headCell.id ? order : false}
           >
@@ -203,9 +179,9 @@ function EnhancedTableHead(props: EnhancedTableProps) {
             </TableSortLabel>
           </TableCell>
         ))}
-        <TableCell align="right">
-          <Box>Edit</Box>
-        </TableCell>
+        {user.role === "Administrators" && (
+          <TableCell key={"action"}>Action</TableCell>
+        )}
       </TableRow>
     </TableHead>
   );
@@ -213,15 +189,19 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 
 interface EnhancedTableToolbarProps {
   numSelected: number;
+  user: any;
 }
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
   const { numSelected } = props;
+
   return (
     <Toolbar
       sx={{
         pl: { sm: 2 },
         pr: { xs: 1, sm: 1 },
+        display: "flex",
+        justifyContent: "space-around",
         ...(numSelected > 0 && {
           bgcolor: (theme) =>
             alpha(
@@ -241,52 +221,30 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
           {numSelected} selected
         </Typography>
       ) : (
-        <Typography
-          sx={{ flex: "1 1 100%" }}
-          variant="h6"
-          id="tableTitle"
-          component="div"
-        >
-          Users
+        <Typography sx={{ mt: 3 }} variant="h4" id="tableTitle" component="div">
+          Courses
         </Typography>
-      )}
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton>
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
       )}
     </Toolbar>
   );
 }
 
-const Categories: React.FC = () => {
+const Courses: React.FC = () => {
   const [order, setOrder] = React.useState<Order>("asc");
-  const [orderBy, setOrderBy] = React.useState<keyof Data>("name");
+  const [orderBy, setOrderBy] = React.useState<keyof Data>("title");
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
-  const { GetAllUsers } = useActions();
-  const { allUsers } = useTypedSelector((store) => store.UserReducer);
-  const { user } = useTypedSelector((store) => store.UserReducer);
-  const { selectedUser } = useTypedSelector((store) => store.UserReducer);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const { allCourses } = useTypedSelector((state) => state.CourseReducer);
+  const { user } = useTypedSelector((state) => state.UserReducer);
 
+  const { GetAllCourses } = useActions();
   useEffect(() => {
-    GetAllUsers();
+    GetAllCourses();
   }, []);
 
-  console.log(allUsers);
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
     property: keyof Data
@@ -298,7 +256,7 @@ const Categories: React.FC = () => {
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelected = allUsers.map((n: any) => n.email);
+      const newSelected = allCourses.map((n: any) => n.name);
       setSelected(newSelected);
       return;
     }
@@ -340,28 +298,36 @@ const Categories: React.FC = () => {
     setDense(event.target.checked);
   };
 
-  const handleEditClick = (row: any) => {
-    console.log(row);
-    localStorage.setItem("updateUser", JSON.stringify(row));
-    navigate("/dashboard/edituser");
-  };
-
   const isSelected = (name: any) => selected.indexOf(name) !== -1;
 
-  // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - allUsers.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - allCourses.length) : 0;
 
+  const navigate = useNavigate();
+
+  const onEditClick = (event: React.MouseEvent<unknown>, row: any) => {
+    window.localStorage.setItem("selectedCource", JSON.stringify(row));
+    navigate("/dashboard/updateCourse");
+  };
+
+  const onAddClick = (event: React.MouseEvent<unknown>) => {
+    console.log("add");
+    navigate("/dashboard/addcourse");
+  };
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
-        <div style={{ width: "100%", textAlign: "right" }}>
-          <Link to="/dashboard/sign-up" style={{ margin: "5px" }}>
-            Add New User
-          </Link>
-        </div>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar numSelected={selected.length} user={user} />
         <TableContainer>
+          {user.role === "Administrators" && (
+            <Button
+              onClick={onAddClick}
+              variant="contained"
+              sx={{ width: "98%", m: "auto", display: "flex", mt: 4, mb: 3 }}
+            >
+              Add new course
+            </Button>
+          )}
           <Table
             sx={{ minWidth: 750 }}
             aria-labelledby="tableTitle"
@@ -373,23 +339,24 @@ const Categories: React.FC = () => {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={allUsers.length}
+              rowCount={allCourses.length}
+              user={user}
             />
             <TableBody>
-              {stableSort(allUsers, getComparator(order, orderBy))
+              {stableSort(allCourses, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  const isItemSelected = isSelected(row.name);
+                  const isItemSelected = isSelected(row.title);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, row.name)}
+                      onClick={(event) => handleClick(event, row.title)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.name}
+                      key={row.title}
                       selected={isItemSelected}
                     >
                       <TableCell padding="checkbox">
@@ -401,21 +368,27 @@ const Categories: React.FC = () => {
                           }}
                         />
                       </TableCell>
-                      <TableCell align="right">{row.name}</TableCell>
-                      <TableCell align="right">{row.surname}</TableCell>
-                      <TableCell align="right">{row.email}</TableCell>
-                      <TableCell align="right">{row.phoneNumber}</TableCell>
-                      <TableCell align="right">{row.role}</TableCell>
-                      <TableCell align="right">
-                        {row.isBlocked ? "Yes" : "No"}
+                      <TableCell align="left">{row.title}</TableCell>
+                      <TableCell align="left">{row.description}</TableCell>
+                      <TableCell align="left">{row.price}</TableCell>
+                      <TableCell align="left">
+                        {
+                          <img
+                            src={`${row.imagePath}?w=161&fit=crop&auto=format`}
+                            alt="Image"
+                          />
+                        }
                       </TableCell>
-                      <TableCell align="right">
-                        <Button
-                          variant="outlined"
-                          onClick={() => handleEditClick(row)}
-                        >
-                          Edit
-                        </Button>
+                      <TableCell align="left">{row.categoryName}</TableCell>
+                      <TableCell align="left">
+                        {user.role === "Administrators" && (
+                          <Button
+                            onClick={(event) => onEditClick(event, row)}
+                            variant="outlined"
+                          >
+                            Edit
+                          </Button>
+                        )}
                       </TableCell>
                     </TableRow>
                   );
@@ -435,7 +408,7 @@ const Categories: React.FC = () => {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={allUsers.length}
+          count={allCourses.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
@@ -450,4 +423,4 @@ const Categories: React.FC = () => {
   );
 };
 
-export default Categories;
+export default Courses;

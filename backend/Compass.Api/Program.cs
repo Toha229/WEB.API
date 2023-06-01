@@ -1,6 +1,7 @@
 using Compass.Core;
 using Compass.Infrastructure;
 using Compass.Infrastructure.DbInitializers;
+using Compass.Infrastructure.Initializers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -102,5 +103,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 await UserInitializer.Seed(app);
-await ProductInitializer.Seed(app);
 app.Run();

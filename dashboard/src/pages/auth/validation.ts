@@ -71,10 +71,10 @@ export const ChangeProfileSchema = Yup.object().shape({
   lastName: Yup.string().required("Surname is required").label("Surname"),
   phone: Yup.string().required("Phone is required").label("Phone"),
   password: Yup.string()
-  .min(6, "Password must be at least 6 characters")
-  .required("Required")
-  .matches(passwordRegExp, "Password must contains A-Z, a-z, 0-9")
-  .label("Password"),
+    .min(6, "Password must be at least 6 characters")
+    .required("Required")
+    .matches(passwordRegExp, "Password must contains A-Z, a-z, 0-9")
+    .label("Password"),
 });
 
 export const EditUserSchema = Yup.object().shape({
@@ -85,4 +85,19 @@ export const EditUserSchema = Yup.object().shape({
   firstName: Yup.string().required("Name is required").label("Name"),
   lastName: Yup.string().required("Surname is required").label("Surname"),
   phone: Yup.string().required("Phone is required").label("Phone"),
+});
+
+export const AddCourseSchema = Yup.object().shape({
+  title: Yup.string().required("Title is required").label("Title"),
+  description: Yup.string()
+    .required("Description is required")
+    .label("Description"),
+  price: Yup.string().required("Price is required").label("Price"),
+});
+
+export const AddCategorySchema = Yup.object().shape({
+  name: Yup.string().required("Title is required").label("Title"),
+  description: Yup.string()
+    .required("Description is required")
+    .label("Description"),
 });
